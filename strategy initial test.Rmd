@@ -22,7 +22,7 @@ library(stringr)
 #Load in the data
 
 #This sets the directory where the texts are located
-DATA_DIR <- "C:\Users\laura\OneDrive\Desktop\Krogh-Arctic\Strategy Documents"  
+DATA_DIR <- "C:/Users/laura/OneDrive/Desktop/Krogh-Arctic/Strategy Documents"  
 
 #This command reads in all the file names and stores the texts in a tidy dataframe
 arctic <- readtext(paste0(DATA_DIR, "/*"))
@@ -75,9 +75,7 @@ Let's create a wordcloud for our reference documents (chosen in the article for 
 #Y
 
 
-textplot_wordcloud(dfm_subset(dfm,doc_id=="EDOCS-4287-v2A-ACMMUS10_FAIRBANKS_2017_Statement_by_Foreign_Minister_of_Russian_Federation_EN.pdf" | doc_id=="EDOCS-4283-v2A-ACMMUUS10_FAIRBANKS_2017_Statement_by_Foreign_Minister_of_Iceland.pdf" ), comparison = TRUE, max.words=75)
-
-textplot_wordcloud(dfm_subset(dfm,doc_id=="EDOCS-4296-v1A-ACMMUS10_FAIRBANKS_2017_Statement_by_US_Secretary_of_State.pdf" | doc_id=="EDOCS-4283-v2A-ACMMUUS10_FAIRBANKS_2017_Statement_by_Foreign_Minister_of_Iceland.pdf" ), comparison = TRUE, max.words=75)
+textplot_wordcloud(dfm_subset(dfm,doc_id=="south_korea.pdf" | doc_id=="Iceland.pdf" ), comparison = TRUE, max.words=75)
 
 ```
 OK, now we can estimate the wordscores model
