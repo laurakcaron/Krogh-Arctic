@@ -79,7 +79,7 @@ Let's create a wordcloud for our reference documents (chosen in the article for 
 ```{r, echo=TRUE, message=FALSE}
 
 
-textplot_wordcloud(dfm_subset(dfm, doc_id=="Finland_2013.pdf" | doc_id=="Iceland_2011.pdf" ), comparison = TRUE, max_words=100)
+textplot_wordcloud(dfm_subset(dfm, doc_id=="Russia_2009.txt" | doc_id=="Iceland_2011.pdf" ), comparison = TRUE, max_words=100)
 
 ```
 OK, now we can estimate the wordscores model

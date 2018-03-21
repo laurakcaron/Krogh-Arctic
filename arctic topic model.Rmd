@@ -157,77 +157,6 @@ Can you interpret the different topics?
 ###Proportion of tweets in each topic
 
 
-
-```{r}
-plot.STM(TwitterPrevFit, type="summary")
-```
-
-We can also look at the probabilities each Tweet fits a topic
-
-```{r}
-td_gamma <- tidy(TwitterPrevFit, matrix = "gamma")
-
-ggplot(td_gamma, aes(gamma, fill = as.factor(topic))) +
-  geom_histogram(alpha = 0.8, show.legend = FALSE) +
-  facet_wrap(~ topic, ncol = 3) +
-  labs(title = "Distribution of tweet probabilities for each topic",
-       subtitle = "Most tweets fit in multiple topics",
-       y = "Number of tweets", x = expression(gamma))
-```
-
-
-
-###Network display of how closely related topics are to one another, (i.e., how likely they are to appear in the same document) Requires 'igraph' package
-
-
-```{r}
-mod.out.corr<-topicCorr(TwitterPrevFit)
-plot.topicCorr(mod.out.corr)
-```
-
-
-###Wordcloud for a specified topic
-
-```{r}
-cloud(TwitterPrevFit, topic=4)
-
-```
-
-
-###VISUALIZE DIFFERENCES BETWEEN TWO DIFFERENT TOPICS using the ,type="perspectives" option
-
-```{r}
-plot.STM(TwitterPrevFit,type="perspectives", topics=c(4, 6))
-```
-
-
-###Create a browser to examine topics
-
-```{r}
-library(LDAvis)
-toLDAvis(mod=TwitterPrevFit, docs=out$documents)
-```
-#There are other cool tools to visualize the results from a topic model
-
-* [STMbrowser](http://pages.ucsd.edu/~meroberts/stm-online-example/index.html): another very simple browser tool (wasn't installing for me.)
-* [STMInsights](https://github.com/methodds/stminsights) A Shiny app that lets the user manipulate and visualize topics.
-
-##Linking topics to covariates
-
-* We are first going to estimate the effect of a covariate on topic proportions and then plot the effect
-* For documentation see the funnctions [estimateeffect](https://www.rdocumentation.org/packages/stm/versions/1.1.3/topics/estimateEffect) and [plot.estimateeffect](https://www.rdocumentation.org/packages/stm/versions/1.1.3/topics/plot.estimateEffect)
-*Here we estimate whether tweets in a certain topic are retweeted more
-
-```{r}
-
-
-prep <- estimateEffect(1:6 ~ retweet_count,TwitterPrevFit,meta=meta, uncertainty = "Global")
-plot.estimateEffect(prep, "retweet_count", method="continuous", topics=1:6)
-
-```
-
-There are lots of other things you could do with this. For instance, you could run a sentiment analysis and see if tweets with certain sentiments also are about different topics. Or you could link the topics with other things you know about the documents (e.g. geolocation). Or you could take the next step and move to prediction.
-
 ##Topic Models for UN Speeches
 Olav also created some code to estimate a topic model for UN speeches, using a different package.
 
@@ -264,7 +193,7 @@ summary(ungd_2017, n=10)
 
 ```{r}
 #Tokenzing words, removing punctuation, numbers and certain characters, removing tokens less than three characters
-tok <- tokens(ungd_2017, what = "word", removePunct = TRUE, removeSymbols = TRUE, removeNumbers = TRUE, removeTwitter = TRUE, removeURL = TRUE, removeHyphens = TRUE,verbose = TRUE)
+tok <- tokens(corpus, what = "word", removePunct = TRUE, removeSymbols = TRUE, removeNumbers = TRUE, removeTwitter = TRUE, removeURL = TRUE, removeHyphens = TRUE,verbose = TRUE)
 
 tok <- tokens_select(tok, c("[\\d-]", "[[:punct:]]", "^.{1,2}$"), 
                        selection = "remove", 
@@ -272,16 +201,26 @@ tok <- tokens_select(tok, c("[\\d-]", "[[:punct:]]", "^.{1,2}$"),
 ```
 ```{r}
 #Setting words to lower case, removing meaningless stopwords and stemming  words
-dfm <- dfm(tok, tolower = TRUE, remove=stopwords("SMART"), stem=TRUE,    verbose = TRUE)
+dfm2 <- dfm(tok, tolower = TRUE, remove=stopwords("SMART"), stem=TRUE,    verbose = TRUE)
 
 #Lastly, dropping words that appear less than 5 times and in less than 3 documents
-dfm <- dfm_trim(dfm, min_count = 5, min_docfreq = 3)
+dfm2 <- dfm_trim(dfm2, min_count = 5, min_docfreq = 3)
+
+dfm2<-dfm_remove(dfm2, c("also", "as well", "arctic", "council", "arctic council", "cooperation", "region", "cooper", "intern", "international"))
+
+
+dtm <- convert(dfm2, to = "tm")
+
+
+ui = unique(dtm$i)
+dtm.new = dtm[ui,]
+
 ```
 
 * As before, we can look at the most popular terms in the speeches.
 
 ```{r}
-topfeatures(dfm, n = 100) 
+topfeatures(dfm2, n = 100) 
 ```
 
 ##Estimating a topic model
@@ -298,13 +237,13 @@ topfeatures(dfm, n = 100)
 ## k = 5 sets the number of topics to run with. The fewer the topics, the easier it is for the model to identify unique groupings
 
 library(topicmodels)
-ungaModel <- LDA(dfm, method = "VEM", k = 5)
+Model2 <- LDA(dtm.new, method = "VEM", k = 5)
 ```
 
 * We can look at which words contribute the most to each topic.
 
 ```{r}
-get_terms(ungaModel, k = 10)
+get_terms(Model2, k = 20)
 ```
 
 * For example, here we can see a topic (Topic 1) concerned with international security and world peace, and another (Topic 2) concerned with support for global climate change. Topic 3 might be concerned with sustainable development from a security perspective.
@@ -312,7 +251,7 @@ get_terms(ungaModel, k = 10)
 * Next, we can look at which topic dominates each country's speech
 
 ```{r}
-a <- get_topics(ungaModel)
+a <- get_topics(Model2)
 a
 ```
 
@@ -334,6 +273,18 @@ mapCountryData(unga_map,
                catMethod = "categorical",
                colourPalette = "negpos8",
                mapTitle = "World Map by Topic")
+
+unga_topic_frame <- separate(unga_topic_frame, CountryAbb, c("country", "year", "filetype"), convert = TRUE)
+
+unga_grouped<-unga_topic_frame %>%
+  group_by(country, Topic) %>%
+  summarize(freq = n())
+
+unga_grouped
+library(plotly)
+p <- ggplot(unga_grouped, aes(x=Topic, y=freq, fill=country)) + geom_bar(stat="identity") 
+ggplotly(p)
+p
 ```
 
 * We can also represent contributions of words to topics more visually.
