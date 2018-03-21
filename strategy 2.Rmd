@@ -1,0 +1,128 @@
+---
+author: "Laura Caron"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Scaling Texts
+
+```{r echo=FALSE, message=FALSE}
+
+#Load Packages
+
+library(readtext)
+library(quanteda)
+library(dplyr)
+library(stringr)
+
+
+#Load in the data
+
+#This sets the directory where the texts are located
+DATA_DIR <- "C:/Users/laura/OneDrive/Desktop/Krogh-Arctic/Strategy Documents (new)"  
+
+#This command reads in all the file names and stores the texts in a tidy dataframe
+strategy <- readtext(paste0(DATA_DIR, "/*"))
+
+#This identifies the row names of the dataframe, which are also used in the corpus
+#Note that these docnames are not as nice as for the UN Corpus as they vary a bit
+
+row.names(strategy) <- strategy$doc_id
+
+#This command reads in the corpus based on the filenames we defined above
+strategycorpus <- corpus(strategy, text_field = "text") 
+
+#Do again for the other folder
+
+DATA_DIR <- "C:/Users/laura/OneDrive/Desktop/Krogh-Arctic/Observer Documents"  
+observer <- readtext(paste0(DATA_DIR, "/*"))
+row.names(observer) <- observer$doc_id
+observercorpus <- corpus(observer, text_field = "text") 
+
+#add them together
+corpus <- strategycorpus+observercorpus
+
+```
+
+The next step is to create a dfm. We can do this in one step with tokenizing.
+
+Unlike in our previous example, we are also going to look at bigrams. Bigrams are two words that often appear together (and trigrams are collections of three words).
+
+
+```{r}
+#
+
+dfm <- tokens(corpus) %>%
+    tokens_remove("\\p{P}", valuetype = "regex", padding = TRUE) %>%
+   tokens_remove("\\p{N}", valuetype = "regex", padding = TRUE) %>%
+  tokens_remove("\\p{S}", valuetype = "regex", padding = TRUE) %>%
+    tokens_remove(stopwords("english"), padding  = TRUE) %>%
+    tokens_ngrams(n = 1:2, concatenator = " ") %>%
+    dfm(verbose=FALSE)
+
+#Obviously, using bigrams increases the size of the dfm by a lot. Let's only include words that are used at least 10 times and in at least two documents. That also means we will only get words that appear together regularly.
+
+topfeatures(dfm)
+```
+
+```{r}
+#removing common words that appear to be neutral
+dfm<-dfm_remove(dfm, c("also", "as well", "arctic", "council", "arctic council"))
+topfeatures(dfm)
+```
+
+
+Let's create a wordcloud for our reference documents (chosen in the article for substantive reasons).
+```{r, echo=TRUE, message=FALSE}
+
+
+textplot_wordcloud(dfm_subset(dfm, doc_id=="Finland_2013.pdf" | doc_id=="Iceland_2011.pdf" ), comparison = TRUE, max_words=100)
+
+```
+OK, now we can estimate the wordscores model
+```{r}
+library(tm)
+library(topicmodels)
+library(tidytext)
+
+
+dtm <- convert(dfm, to = "tm")
+
+lda <- LDA(dtm, k = 6, control = list(seed = 1234))
+lda_td <- tidy(lda)
+
+top_terms <- lda_td %>%
+  group_by(topic) %>%
+  top_n(5, beta) %>%
+  ungroup() %>%
+  arrange(topic, -beta)
+
+library(ggplot2)
+top_terms %>%
+  mutate(term = reorder(term, beta)) %>%
+  ggplot(aes(term, beta)) +
+  geom_bar(stat = "identity") +
+  facet_wrap(~ topic, scales = "free") +
+  theme(axis.text.x = element_text(size = 15, angle = 90, hjust = 1))
+
+lda_gamma <- tidy(lda, matrix = "gamma")
+
+library(tidyr)
+lda_gamma <- lda_gamma %>%
+  separate(document, c("country", "year", "filetype"), convert = TRUE)
+
+
+lda_grouped <- lda_gamma %>%
+  group_by(country) %>%
+  count(topic) %>%
+  ungroup()
+
+ggplot(lda_gamma, aes(topic, fill = factor(country))) +
+  geom_bar() 
+
+
+```
+
