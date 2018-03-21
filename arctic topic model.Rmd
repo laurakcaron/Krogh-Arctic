@@ -1,0 +1,413 @@
+---
+title: "stm model"
+output: html_document
+---
+
+##Topic Modeling
+
+Topic modeling is a way to automatically categorize what texts are about based on what words appear together a lot. This type of classification can be useful if we have a large number of texts and we are interested in examining just what these texts are about.
+
+*Unsupervised models: Classification analysis. An algorithm simply assigns words to topics when they appear together a lot and can then make assesments about what topic a document predominantly talks.
+
+*Supervised topic models: Predict. These models associate words with some known variable that we would like to be able to predict. For example, if we have the text of movie reviews, can we predict a numerical rating of a movie? And can we then use movie review texts where we don't (yet) have a rating to predict what the rating will be.
+
+*Supervised models are more interesting but also more involved. We won't really go there here.
+
+*Unsupervised models require us to interpret ex post what each topic reflects
+
+We are going to start with some data from a Twitter search on the UN Security Council. No need to repeat the search since I stored the data! Essentially we are interested in figuring out what people are saying about the council. [Here](https://juliasilge.com/blog/sherlock-holmes-stm/) is a much more fun example of Sherlock Holmes stories.
+
+
+OK, let's load our libraries, the data and wrangle the data in a way that it can be analyzed.
+
+```{r, message=FALSE, warning=FALSE}
+
+library(stm)
+library(igraph)
+#tidyverse actually installs pretty much all the packages that we've been using
+library(tidyverse)
+library(tidytext)
+
+library(readtext)
+library(quanteda)
+library(dplyr)
+library(stringr)
+
+
+#Load in the data
+
+#This sets the directory where the texts are located
+DATA_DIR <- "C:/Users/laura/OneDrive/Desktop/Krogh-Arctic/Strategy Documents (new)"  
+
+#This command reads in all the file names and stores the texts in a tidy dataframe
+strategy <- readtext(paste0(DATA_DIR, "/*"))
+
+#This identifies the row names of the dataframe, which are also used in the corpus
+#Note that these docnames are not as nice as for the UN Corpus as they vary a bit
+
+row.names(strategy) <- strategy$doc_id
+
+#This command reads in the corpus based on the filenames we defined above
+strategycorpus <- corpus(strategy, text_field = "text") 
+
+#Do again for the other folder
+
+DATA_DIR <- "C:/Users/laura/OneDrive/Desktop/Krogh-Arctic/Observer Documents"  
+observer <- readtext(paste0(DATA_DIR, "/*"))
+row.names(observer) <- observer$doc_id
+observercorpus <- corpus(observer, text_field = "text") 
+
+DATA_DIR <- "C:/Users/laura/OneDrive/Desktop/Krogh-Arctic/Arctic Speeches"  
+speeches <- readtext(paste0(DATA_DIR, "/*"))
+row.names(speeches) <- speeches$doc_id
+speechescorpus <- corpus(speeches, text_field = "text") 
+
+#add them together
+corpus <- strategycorpus+observercorpus+speechescorpus
+
+dfm <- tokens(corpus) %>%
+    tokens_remove("\\p{P}", valuetype = "regex", padding = TRUE) %>%
+   tokens_remove("\\p{N}", valuetype = "regex", padding = TRUE) %>%
+  tokens_remove("\\p{S}", valuetype = "regex", padding = TRUE) %>%
+    tokens_remove(stopwords("english"), padding  = TRUE) %>%
+    tokens_ngrams(n = 1:2, concatenator = " ") %>%
+    dfm(verbose=FALSE)
+
+dfm<-dfm_remove(dfm, c("also", "as well", "arctic", "council", "arctic council", "cooperation"))
+
+```
+
+
+
+#Estimating a topic model
+
+* I am going to estimate a very simple model with 6 topics.
+
+* Model selection is actually pretty hard (see at the earlier link) but we're sidestepping that issue in this example
+
+* stm models take a little while to fit (although this one is not too bad). They can also include some covariate if you have an idea what should be correlated with topic prevalence.
+
+
+```{r}
+#This is a simple model. I set the seed to ensure that the model yields the same result each time
+
+Model <- stm(dfm,K=6, seed=5926696, verbose=FALSE) 
+Model2 <- stm(dfm, K=8, seed=1122344, verbose=FALSE)
+Model3 <- stm(dfm, K=4, seed=888882, verbose=FALSE)
+
+```
+
+
+#Analysis
+
+###List of top words per topic
+This is the built-in function
+
+```{r}
+
+plot.STM(Model,type="labels")
+```
+We can use tidy() on the output of an stm model, and then get the probabilities that each word is generated from each topic.
+
+```{r}
+tidy_beta <- tidy(Model)
+
+tidy_beta %>%
+    group_by(topic) %>%
+    top_n(10, beta) %>%
+    ungroup() %>%
+        ggplot(aes(reorder(term,beta), beta, fill = as.factor(topic))) +
+    geom_col(alpha = 0.8, show.legend = FALSE) +
+    facet_wrap(~ topic, scales = "free_y") +
+    coord_flip() +
+        labs(x = NULL, y = "term",
+         title = "Highest word probabilities for each topic",
+         subtitle = "Different words are associated with different topics")
+
+tidy_beta2 <- tidy(Model2)
+tidy_beta2 %>%
+    group_by(topic) %>%
+    top_n(10, beta) %>%
+    ungroup() %>%
+        ggplot(aes(reorder(term,beta), beta, fill = as.factor(topic))) +
+    geom_col(alpha = 0.8, show.legend = FALSE) +
+    facet_wrap(~ topic, scales = "free_y") +
+    coord_flip() +
+        labs(x = NULL, y = "term",
+         title = "Highest word probabilities for each topic",
+         subtitle = "Different words are associated with different topics")
+
+tidy_beta3 <- tidy(Model3)
+tidy_beta3 %>%
+    group_by(topic) %>%
+    top_n(10, beta) %>%
+    ungroup() %>%
+        ggplot(aes(reorder(term,beta), beta, fill = as.factor(topic))) +
+    geom_col(alpha = 0.8, show.legend = FALSE) +
+    facet_wrap(~ topic, scales = "free_y") +
+    coord_flip() +
+        labs(x = NULL, y = "term",
+         title = "Highest word probabilities for each topic",
+         subtitle = "Different words are associated with different topics")
+
+```
+
+Can you interpret the different topics?
+
+###Proportion of tweets in each topic
+
+
+
+```{r}
+plot.STM(TwitterPrevFit, type="summary")
+```
+
+We can also look at the probabilities each Tweet fits a topic
+
+```{r}
+td_gamma <- tidy(TwitterPrevFit, matrix = "gamma")
+
+ggplot(td_gamma, aes(gamma, fill = as.factor(topic))) +
+  geom_histogram(alpha = 0.8, show.legend = FALSE) +
+  facet_wrap(~ topic, ncol = 3) +
+  labs(title = "Distribution of tweet probabilities for each topic",
+       subtitle = "Most tweets fit in multiple topics",
+       y = "Number of tweets", x = expression(gamma))
+```
+
+
+
+###Network display of how closely related topics are to one another, (i.e., how likely they are to appear in the same document) Requires 'igraph' package
+
+
+```{r}
+mod.out.corr<-topicCorr(TwitterPrevFit)
+plot.topicCorr(mod.out.corr)
+```
+
+
+###Wordcloud for a specified topic
+
+```{r}
+cloud(TwitterPrevFit, topic=4)
+
+```
+
+
+###VISUALIZE DIFFERENCES BETWEEN TWO DIFFERENT TOPICS using the ,type="perspectives" option
+
+```{r}
+plot.STM(TwitterPrevFit,type="perspectives", topics=c(4, 6))
+```
+
+
+###Create a browser to examine topics
+
+```{r}
+library(LDAvis)
+toLDAvis(mod=TwitterPrevFit, docs=out$documents)
+```
+#There are other cool tools to visualize the results from a topic model
+
+* [STMbrowser](http://pages.ucsd.edu/~meroberts/stm-online-example/index.html): another very simple browser tool (wasn't installing for me.)
+* [STMInsights](https://github.com/methodds/stminsights) A Shiny app that lets the user manipulate and visualize topics.
+
+##Linking topics to covariates
+
+* We are first going to estimate the effect of a covariate on topic proportions and then plot the effect
+* For documentation see the funnctions [estimateeffect](https://www.rdocumentation.org/packages/stm/versions/1.1.3/topics/estimateEffect) and [plot.estimateeffect](https://www.rdocumentation.org/packages/stm/versions/1.1.3/topics/plot.estimateEffect)
+*Here we estimate whether tweets in a certain topic are retweeted more
+
+```{r}
+
+
+prep <- estimateEffect(1:6 ~ retweet_count,TwitterPrevFit,meta=meta, uncertainty = "Global")
+plot.estimateEffect(prep, "retweet_count", method="continuous", topics=1:6)
+
+```
+
+There are lots of other things you could do with this. For instance, you could run a sentiment analysis and see if tweets with certain sentiments also are about different topics. Or you could link the topics with other things you know about the documents (e.g. geolocation). Or you could take the next step and move to prediction.
+
+##Topic Models for UN Speeches
+Olav also created some code to estimate a topic model for UN speeches, using a different package.
+
+```{r}
+library(readtext)
+library(quanteda)
+
+DATA_DIR <- "C:/Users/ev42/Box Sync/Krogh2018/UNSpeeches/Converted sessions/Session 72 - 2017" 
+
+#Reads in file names, stores text in a tidy dataframe
+ungd_files <- readtext(paste0(DATA_DIR, "/*"), 
+                                 docvarsfrom = "filenames", 
+                                 dvsep="_", 
+                                 docvarnames = c("Country", "Session", "Year"))
+
+#Identifies row names of the dataframe, which are also used in the corpus
+row.names(ungd_files) <- ungd_files$Country
+
+#Reads in the corpus based on the filenames we defined above
+ungd_2017 <- corpus(ungd_files, text_field = "text")
+
+summary(ungd_2017, n = 10)
+```
+
+*As before, we can summarize what's in the corpus to see what we're working with.
+
+```{r}
+summary(ungd_2017, n=10)
+```
+
+#3. Pre-processing
+
+*As before, we need to tokenize words in the corpus and remove non-word characters. We will again be using the 'bag of words' approach, which treats each word individually and doesn't consider its context in the sentence.
+
+```{r}
+#Tokenzing words, removing punctuation, numbers and certain characters, removing tokens less than three characters
+tok <- tokens(ungd_2017, what = "word", removePunct = TRUE, removeSymbols = TRUE, removeNumbers = TRUE, removeTwitter = TRUE, removeURL = TRUE, removeHyphens = TRUE,verbose = TRUE)
+
+tok <- tokens_select(tok, c("[\\d-]", "[[:punct:]]", "^.{1,2}$"), 
+                       selection = "remove", 
+                    valuetype="regex", verbose = TRUE)
+```
+```{r}
+#Setting words to lower case, removing meaningless stopwords and stemming  words
+dfm <- dfm(tok, tolower = TRUE, remove=stopwords("SMART"), stem=TRUE,    verbose = TRUE)
+
+#Lastly, dropping words that appear less than 5 times and in less than 3 documents
+dfm <- dfm_trim(dfm, min_count = 5, min_docfreq = 3)
+```
+
+* As before, we can look at the most popular terms in the speeches.
+
+```{r}
+topfeatures(dfm, n = 100) 
+```
+
+##Estimating a topic model
+
+* You can find a great overview of this and other associated topics at: https://www.tidytextmining.com/topicmodeling.html
+
+* Topic modelling is a method for finding a group of words (a topic) from a collection of documents that best represents the information in your chosen collection. It can also be thought of as a way to obtain recurring patterns of words.
+* Topic modelling is also extremely useful because it can uncover trends we didn't even know we were looking for. It is an unsupervised model; you can let it loose on a corpus (after some tweaking to prepare the model) and see what happens.
+* LDA (Latent Dirichlet allocation) is a popular method for fitting a topic model. LDA considers documents as mixtures of topics that contain words in a probabalistic way, and the frequency with which certain words appear with one another is where we can gain fascinating insights.
+
+* Let's start with 5 topics. In general, the more topics you run, the less well-defined your resultant groupings will be. This command will run for a bit.
+
+```{r}
+## k = 5 sets the number of topics to run with. The fewer the topics, the easier it is for the model to identify unique groupings
+
+library(topicmodels)
+ungaModel <- LDA(dfm, method = "VEM", k = 5)
+```
+
+* We can look at which words contribute the most to each topic.
+
+```{r}
+get_terms(ungaModel, k = 10)
+```
+
+* For example, here we can see a topic (Topic 1) concerned with international security and world peace, and another (Topic 2) concerned with support for global climate change. Topic 3 might be concerned with sustainable development from a security perspective.
+
+* Next, we can look at which topic dominates each country's speech
+
+```{r}
+a <- get_topics(ungaModel)
+a
+```
+
+* This output isn't very helpful. Perhaps we'd want to map this output, to see if any obvious blocs emerge?
+
+```{r}
+library(tibble)
+
+##Converting to a data frame and making the rownames a column, then renaming the columns
+unga_topic_frame <- a %>%
+  as.data.frame() %>%
+  rownames_to_column()
+names(unga_topic_frame) <- c("CountryAbb", "Topic")
+
+library(rworldmap)
+unga_map <- joinCountryData2Map(unga_topic_frame, joinCode = "NAME", nameJoinColumn = "CountryAbb")
+mapCountryData(unga_map,
+               nameColumnToPlot = "Topic",
+               catMethod = "categorical",
+               colourPalette = "negpos8",
+               mapTitle = "World Map by Topic")
+```
+
+* We can also represent contributions of words to topics more visually.
+* Here, we extract the 'beta' from the model for each word using the tidy() function. This represents per-topic-per-word probability. In practical terms, beta represents the likelihood that a particular topic will generate a certain word. 
+* For example, the likelihood that 'develop' appears in topic 4 is around 0.015.
+
+```{r}
+library(dplyr)
+library(tidytext)
+
+##Pulling out beta
+unga_topics <- tidy(ungaModel, matrix = "beta")
+
+##top_n selects the 10 terms most common in each topic, according to beta
+unga_top_terms <- unga_topics %>%
+  group_by(topic) %>%
+  top_n(10, beta) %>%
+  ungroup() %>%
+  arrange(topic, -beta)
+
+unga_top_terms %>%
+  mutate(term = reorder(term, beta)) %>%
+  ggplot(aes(term, beta, fill = factor(topic))) +
+  geom_col(show.legend = FALSE) +
+  facet_wrap(~ topic, scales = "free") +
+  coord_flip()
+```
+
+* We can map the number of times a specific word, say "terror", comes up in each country's speech.
+
+```{r}
+# Group frequency by country
+freq_grouped <- textstat_frequency(dfm(ungd_2017), 
+                                   groups = "Country")
+
+# Filter the term "terror"
+freq_terror <- subset(freq_grouped, freq_grouped$feature %in% "terror")  
+
+# Plot
+ggplot(freq_terror, aes(x = reorder(group, frequency), y = frequency)) +
+    geom_point() + 
+    scale_y_continuous(limits = c(0, 7), breaks = c(seq(0, 14, 2))) +
+    xlab(NULL) + 
+    ylab("Frequency") +
+    theme(axis.text.x = element_text(angle = 90, hjust = 1))
+```
+
+* However, the above is only a raw frequency plot. If we consider the length of each document, we can weight the appearance of particular words, in this case "terror", accordingly.
+
+```{r}
+
+dfm_rel_freq <- dfm_weight(dfm(ungd_2017), scheme = "prop") * 100
+
+rel_freq <- textstat_frequency(dfm_rel_freq, groups = "Country")
+
+# Filter the term "terror"
+rel_freq_terror <- subset(rel_freq, feature %in% "terror")  
+
+#Plot
+ggplot(rel_freq_terror, aes(x = reorder(group, frequency), y = frequency)) +
+    geom_point() + 
+    scale_y_continuous(limits = c(0, 0.25), breaks = c(seq(0, 0.7, 0.1))) +
+    xlab(NULL) + 
+    ylab("Relative Frequency") +
+    theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+## It's important to use relative frequency!
+```
+
+* Lastlt, Lexical Dispersion plots allow us to see both how often and when in the document a word is mentioned.
+
+```{r}
+data_corpus_inaugural_subset <- 
+    corpus_subset(ungd_2017)
+kwic(ungd_2017, pattern = "terror") %>%
+    textplot_xray()
+```
