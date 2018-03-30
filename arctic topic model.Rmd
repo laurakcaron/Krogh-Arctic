@@ -220,7 +220,7 @@ dtm.new = dtm[ui,]
 * As before, we can look at the most popular terms in the speeches.
 
 ```{r}
-topfeatures(dfm2, n = 100) 
+topfeatures(dfm2, n = 300, scheme = c("docfreq")) 
 ```
 
 ##Estimating a topic model
