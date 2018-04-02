@@ -23,7 +23,7 @@ library(stringr)
 #Load in the data
 
 #This sets the directory where the texts are located
-DATA_DIR <- "C:/Users/Laura/Desktop/Downloads/Arctic Speeches"  
+DATA_DIR <- "C:/Users/carolineschauder/Desktop/Downloads/Arctic Speeches"  
 
 #This command reads in all the file names and stores the texts in a tidy dataframe
 arctic <- readtext(paste0(DATA_DIR, "/*"))
