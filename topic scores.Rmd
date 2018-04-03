@@ -4,13 +4,13 @@ output: html_document
 ---
 
 ##Topic Scores
-This analysis analyzes Artic Council speeches and national arctic strategy documents by comparing the relative frequencies of words belonging to ten different topics. We have defined these topics by creating dictionaries of commonly mentioned words that relate to each.
+This analysis analyzes Arctic Council speeches and national arctic strategy documents by comparing the relative frequencies of words belonging to ten different topics. We have defined these topics by creating dictionaries of commonly mentioned words that relate to each.
 
 The method used here calculates the fraction of words in each document belonging to each topic to calculate a document-level score. It then averages document-level scores for each country to create a country-level score.
 
 ###Preparing the data
 
-This section loads the libraries and the text files from three different folders. It also contains some excess code. Moving forward, we use the dataframes developed from the readtext function, not the corpuses, dtms, or dfms.
+This section loads the libraries and the text files sfrom three different folders. It also contains some excess code. Moving forward, we use the dataframes developed from the readtext function, not the corpuses, dtms, or dfms.
 
 This version does not remove stop words, punctuation, etc. This should not adversely affect our results, since we are using a dictionaries method to calculate our scores.
 
@@ -26,6 +26,7 @@ library(quanteda)
 library(dplyr)
 library(stringr)
 library(plotly)
+library(rworldmap)
 
 #This sets the directory where the texts are located
 DATA_DIR <- "C:/Users/laura/OneDrive/Desktop/Krogh-Arctic/Strategy Documents (new)"  
@@ -238,3 +239,29 @@ ggplotly(p.russia)
 
 
 ```
+
+##Mapping
+
+```{r}
+
+
+mapscores <- function(topic) {
+  name <- deparse(substitute(topic))
+  joinCountryData2Map(topic, joinCode = "NAME", nameJoinColumn = "country") %>%
+  mapCountryData(nameColumnToPlot = "country_score", colourPalette = "heat", addLegend = TRUE, borderCol = "grey", mapTitle = name)
+}
+
+mapscores(environment_scores)
+mapscores(indigenous_scores)
+mapscores(transport_scores)
+mapscores(development_scores)
+mapscores(tourism_scores)
+mapscores(resources_scores)
+mapscores(fisheries_scores)
+mapscores(diplomacy_scores)
+mapscores(security_scores)
+mapscores(russia_scores)
+  
+```
+
+
