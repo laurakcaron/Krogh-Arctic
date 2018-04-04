@@ -1,6 +1,10 @@
 ---
 title: "arctic topics"
-output: html_document
+output:
+  
+  html_document: default
+  pdf_document: default
+always_allow_html: yes
 ---
 
 ##Topic Scores
@@ -39,38 +43,24 @@ strategy <- readtext(paste0(DATA_DIR, "/*"))
 
 row.names(strategy) <- strategy$doc_id
 
-#This command reads in the corpus based on the filenames we defined above
-strategycorpus <- corpus(strategy, text_field = "text") 
-
 
 
 #Do again for the other folder
 DATA_DIR <- "C:/Users/laura/OneDrive/Desktop/Krogh-Arctic/Observer Documents"  
 observer <- readtext(paste0(DATA_DIR, "/*"))
 row.names(observer) <- observer$doc_id
-observercorpus <- corpus(observer, text_field = "text") 
 
 
 #Third folder
 DATA_DIR <- "C:/Users/laura/OneDrive/Desktop/Krogh-Arctic/Arctic Speeches"  
 speeches <- readtext(paste0(DATA_DIR, "/*"))
 row.names(speeches) <- speeches$doc_id
-speechescorpus <- corpus(speeches, text_field = "text") 
 
+#Fourth folder
+DATA_DIR <- "C:/Users/laura/OneDrive/Desktop/Krogh-Arctic/Official Speeches and Documents"  
+officialspeeches <- readtext(paste0(DATA_DIR, "/*"))
+row.names(officialspeeches) <- officialspeeches$doc_id
 
-
-#add them together
-corpus <- strategycorpus+observercorpus+speechescorpus
-
-dfm <- tokens(corpus) %>%
-    tokens_remove("\\p{P}", valuetype = "regex", padding = TRUE) %>%
-   tokens_remove("\\p{N}", valuetype = "regex", padding = TRUE) %>%
-  tokens_remove("\\p{S}", valuetype = "regex", padding = TRUE) %>%
-    tokens_remove(stopwords("english"), padding  = TRUE) %>%
-    tokens_ngrams(n = 1:2, concatenator = " ") %>%
-    dfm(verbose=FALSE)
-
-dfm<-dfm_remove(dfm, c("also", "as well", "arctic", "council", "arctic council", "cooperation"))
 
 ```
 
@@ -85,10 +75,13 @@ observerdf <- unnest_tokens(observer, word, text)
 
 speechesdf <- unnest_tokens(speeches, word, text)
 
+officialspeechesdf <- unnest_tokens(officialspeeches, word, text)
+
 #combine the three data frames
 totaldf <- strategydf %>%
   full_join(observerdf) %>%
-  full_join(speechesdf)
+  full_join(speechesdf) %>%
+  full_join(officialspeechesdf)
 
 #calculate the document lengths
 words <- totaldf %>%
@@ -145,6 +138,9 @@ colnames(security) <- "topic"
 
 russia <- data.frame(c("russia"))
 colnames(russia) <- "topic"
+
+china <- data.frame(c("china"))
+colnames(china) <- "topic"
 
 ```
 
@@ -237,6 +233,12 @@ p.russia <- ggplot(russia_scores, aes(x=reorder(country,country_score), y=countr
   ggtitle("Russia")
 ggplotly(p.russia)
 
+#China
+china_scores <- countwords(china)
+p.china <- ggplot(china_scores, aes(x=reorder(country,country_score), y=country_score)) + geom_point() + coord_flip() +
+  ggtitle("China")
+ggplotly(p.china)
+
 
 ```
 
@@ -261,6 +263,7 @@ mapscores(fisheries_scores)
 mapscores(diplomacy_scores)
 mapscores(security_scores)
 mapscores(russia_scores)
+mapscores(china_scores)
   
 ```
 
