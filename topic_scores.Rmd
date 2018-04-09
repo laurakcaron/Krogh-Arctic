@@ -105,6 +105,7 @@ There are ten topics:
 8. diplomacy
 9. security
 10. russia
+11. legal
 
 ```{r}
 environment <- data.frame(c("research", "science/scientific/scientist", "environment","climate","climate change","ocean","sea","sea level","atmosphere","air","ice","warm","melt","knowledge","station","base","glaciological","geological","biological","ecosystem","paleoclimate","laboratory","institution","conservation","preservation","temperature","data","measurement","study","precipitation","pollution","cryospheric","publication","biodiversity","academic", "glacier","disaster","observe","trend","predict","species","force","global warming","protect" ))
@@ -140,7 +141,7 @@ diplomacy <- data.frame(c("strengthen","joint","relationship","peace","integrati
 colnames(diplomacy) <- "topic"
 diplomacy <- mutate(diplomacy, name = "diplomacy")
 
-security <- data.frame(c("sovereignty","continentalshelf","State","nation","secure/security","stakeholder","governance","rule","UNCLOS","claim","jurisdiction","rights","interests","territory","zone","own","influence","spitsbergen","role","legal","law","just","treaties","treaty","military","defend/defense","position","independent","regulation"))
+security <- data.frame(c("sovereignty", "state", "nation", "secure", "security", "stakeholder", "governance", "claim", "interests", "territory", "zone", "own", "influence", "military", "defend", "defense", "position", "independent"))
 colnames(security) <- "topic"
 security <- mutate(security, name = "security")
 
@@ -152,7 +153,9 @@ china <- data.frame(c("china"))
 colnames(china) <- "topic"
 china <- mutate(china, name = "china")
 
-
+legal <- data.frame(c("continental shelf", "rule", "UNCLOS", "jurisdiction", "rights", "spitsbergen", "legal", "law", "just", "treaty", "treaties", "regulation"))
+colnames(legal) <- "topic"
+legal <- mutate(legal, name = "legal")
 ```
 
 ###Generating scores
@@ -174,7 +177,6 @@ countryscores <- docscores %>%
   group_by(country) %>%
   summarize(country_score = mean(score)) %>%
   mutate(name =topic$name[1] )
-
 }
 
 ```
@@ -252,6 +254,11 @@ p.china <- ggplot(china_scores, aes(x=reorder(country,country_score), y=country_
   ggtitle("China")
 ggplotly(p.china)
 
+#legal
+legal_scores <- countwords(legal)
+p.legal <- ggplot(legal_scores, aes(x=reorder(country,country_score), y=country_score)) + geom_point() + coord_flip() +
+  ggtitle("Legal")
+ggplotly(p.legal)
 
 ```
 
@@ -276,6 +283,7 @@ mapscores(diplomacy_scores)
 mapscores(security_scores)
 mapscores(russia_scores)
 mapscores(china_scores)
+mapscores(legal_scores)
   
 ```
 
@@ -324,7 +332,8 @@ countrydf <- environment_scores %>%
  full_join(diplomacy_scores) %>%
  full_join(security_scores) %>%
  full_join(russia_scores) %>%
- full_join(china_scores) 
+ full_join(china_scores) %>%
+  full_join(legal_scores)
 
 countrydf <- filter(countrydf, country==country.name)
 
