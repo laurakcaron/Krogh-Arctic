@@ -386,9 +386,10 @@ countrydf <- countrydf  %>%
 cleantable <- countrydf %>% spread(name, rank) %>%
   select(country, china:transport)  %>%
   group_by(country) %>%
-  arrange(country, china, development, diplomacy, environment, fisheries, indigenous, legal, resources)
+  arrange(country, environment, diplomacy, legal, indigenous, development, transport, fisheries, resources, security, china, russia)
 
  cleantable
 
+ write.csv(cleantable, file="cleantable.csv")
 
 ```
