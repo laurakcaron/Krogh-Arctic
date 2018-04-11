@@ -321,7 +321,6 @@ joinCountryData2Map(fearsentimentscores, joinCode = "NAME", nameJoinColumn = "co
 
 ```{r}
 
-countrygraph <- function(country.name) {
 countrydf <- environment_scores %>%
    full_join(indigenous_scores) %>%
     full_join(transport_scores)  %>%
@@ -335,9 +334,10 @@ countrydf <- environment_scores %>%
  full_join(china_scores) %>%
   full_join(legal_scores)
 
-countrydf <- filter(countrydf, country==country.name)
+countrygraph <- function(country.name) {
+countrydf2 <- filter(countrydf, country==country.name)
 
-ggplot(countrydf, aes(x=name, y=country_score)) + geom_bar(stat="identity") + theme(axis.text.x = element_text(angle = 90, hjust = 1)) + scale_x_discrete(country.name)
+ggplot(countrydf2, aes(x=name, y=country_score)) + geom_bar(stat="identity") + theme(axis.text.x = element_text(angle = 90, hjust = 1)) + scale_x_discrete(country.name)
 }
 
 countrygraph("Canada")
@@ -362,5 +362,33 @@ countrygraph("Sweden")
 countrygraph("Switzerland")
 countrygraph("UK")
 countrygraph("US")
+
+```
+
+##Creating the categories
+
+```{r}
+
+scoremean <- mean(countrydf$country_score)
+scoresd <- sd(countrydf$country_score)
+
+
+countrydf <- countrydf %>%
+  mutate(sdmean = (country_score-scoremean)/scoresd)
+
+scoresq <- quantile(countrydf$sdmean, probs = c(0, 0.25, 0.5, 0.75, 1))
+
+countrydf <- countrydf  %>%
+  mutate(rank = ifelse(sdmean < scoresq[2], "very low", 
+                       ifelse(sdmean>scoresq[2] & sdmean < scoresq[3], "low", 
+                               ifelse(sdmean>scoresq[3] & sdmean < scoresq[4], "medium", "high"))))
+  
+cleantable <- countrydf %>% spread(name, rank) %>%
+  select(country, china:transport)  %>%
+  group_by(country) %>%
+  arrange(country, china, development, diplomacy, environment, fisheries, indigenous, legal, resources)
+
+ cleantable
+
 
 ```
