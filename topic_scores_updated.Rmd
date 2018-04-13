@@ -280,11 +280,12 @@ ggplotly(p.legal)
 ```{r}
 
 countwords2 <- function(topic){
-docscores <- fulltexts %>%
-  mutate(count = apply(fulltexts, 1, function(x) sum(apply(topic, 1, function(z) str_count(x, z))))) %>%
-  mutate(doclength = wordcount(text)) %>%
-  mutate(score=count/doclength) %>%
-  ungroup()
+docscores <- fulltexts
+docscores$count <- sapply(fulltexts$text, function(x) sum(apply(topic, 1, function(z) str_count(x, z)))) 
+docscores$doclength <- sapply(fulltexts$text, function(x) wordcount(x))
+
+docscores <- docscores %>%
+  mutate(score=count/doclength) 
 
 #calculating country scores by averaging document scores
 countryscores <- docscores %>%
@@ -293,19 +294,18 @@ countryscores <- docscores %>%
   mutate(name =topic$name[1] )
 }
 
-countgraph <- function(topic){
-counts1 <- countwords(topic)  
-counts2 <- countwords2(topic)
-name <- paste0(topic$name[1],"_scoresall")
-countsall <- full_join(counts1, counts2, by="country")
-assign(as.character(name), countsall)
-return(get(name))
-
-p.2 <-ggplot(countsall) + geom_point(aes(x=reorder(country,country_score.y), y=country_score.y)) +  coord_flip() +
-   ggtitle(topic)
-print(p.2)
-}
-countgraph(transport)
+#countgraph <- function(topic){
+#counts1 <- countwords(topic)  
+#counts2 <- countwords2(topic)
+#name <- paste0(topic$name[1],"_scoresall")
+#countsall <- full_join(counts1, counts2, by="country")
+#assign(as.character(name), countsall)
+#return(get(name))
+#p.2 <-ggplot(countsall) + geom_point(aes(x=reorder(country,country_score.y), y=country_score.y)) +  coord_flip() +
+ #  ggtitle(topic)
+#print(p.2)
+#}
+#countgraph(transport)
 
 #Environment
 #calcualte scores
@@ -363,40 +363,40 @@ p.resources2 <- ggplot(resources_all) + geom_point(aes(x=reorder(country,country
 ggplotly(p.resources2)
 
 #Fisheries
-fisheries_scores <- countwords(fisheries)
-p.fisheries <- ggplot(fisheries_scores, aes(x=reorder(country,country_score), y=country_score)) + geom_point() + coord_flip() +
+fisheries_scores2 <- countwords2(fisheries)
+fisheries_all <- full_join(fisheries_scores, fisheries_scores2, by = "country")
+#plot
+p.fisheries2 <- ggplot(fisheries_all) + geom_point(aes(x=reorder(country,country_score.y), y=country_score.y)) +  coord_flip() +
   ggtitle("Fisheries")
-ggplotly(p.fisheries)
+#make interactive
+ggplotly(p.fisheries2)
 
 #Diplomacy
-diplomacy_scores <- countwords(diplomacy)
-p.diplomacy <- ggplot(diplomacy_scores, aes(x=reorder(country,country_score), y=country_score)) + geom_point() + coord_flip() +
+diplomacy_scores2 <- countwords2(diplomacy)
+diplomacy_all <- full_join(diplomacy_scores, diplomacy_scores2, by = "country")
+#plot
+p.diplomacy2 <- ggplot(diplomacy_all) + geom_point(aes(x=reorder(country,country_score.y), y=country_score.y)) +  coord_flip() +
   ggtitle("Diplomacy")
+#make interactive
 ggplotly(p.diplomacy)
 
 #Security
-security_scores <- countwords(security)
-p.security <- ggplot(security_scores, aes(x=reorder(country,country_score), y=country_score)) + geom_point() + coord_flip() +
+security_scores2 <- countwords2(security)
+security_all <- full_join(security_scores, security_scores2, by = "country")
+#plot
+p.security2 <- ggplot(security_all) + geom_point(aes(x=reorder(country,country_score.y), y=country_score.y)) +  coord_flip() +
   ggtitle("Security")
-ggplotly(p.security)
+#make interactive
+ggplotly(p.security2)
 
-#Russia
-russia_scores <- countwords(russia)
-p.russia <- ggplot(russia_scores, aes(x=reorder(country,country_score), y=country_score)) + geom_point() + coord_flip() +
-  ggtitle("Russia")
-ggplotly(p.russia)
-
-#China
-china_scores <- countwords(china)
-p.china <- ggplot(china_scores, aes(x=reorder(country,country_score), y=country_score)) + geom_point() + coord_flip() +
-  ggtitle("China")
-ggplotly(p.china)
-
-#legal
-legal_scores <- countwords(legal)
-p.legal <- ggplot(legal_scores, aes(x=reorder(country,country_score), y=country_score)) + geom_point() + coord_flip() +
+#Legal
+legal_scores2 <- countwords2(legal)
+legal_all <- full_join(legal_scores, legal_scores2, by = "country")
+#plot
+p.legal2 <- ggplot(legal_all) + geom_point(aes(x=reorder(country,country_score.y), y=country_score.y)) +  coord_flip() +
   ggtitle("Legal")
-ggplotly(p.legal)
+#make interactive
+ggplotly(p.legal2)
 ```
 
 
@@ -524,11 +524,50 @@ countrydf <- countrydf  %>%
 cleantable <- countrydf %>% spread(name, rank) %>%
   select(country, china:transport)  %>%
   group_by(country) %>%
-  summarize(transport = mean(transport)) 
-  # arrange(country, environment, diplomacy, legal, indigenous, development, transport, fisheries, resources, security, china, russia)
+  arrange(country, environment, diplomacy, legal, indigenous, development, transport, fisheries, resources, security, china, russia)
 
  cleantable
 
  write.csv(cleantable, file="cleantable.csv")
+
+```
+
+##Creating the categories 2
+
+```{r}
+
+country2df <- environment_scores2 %>%
+   full_join(indigenous_scores2) %>%
+    full_join(transport_scores2)  %>%
+    full_join(development_scores2) %>%
+  full_join(tourism_scores2) %>%
+  full_join(resources_scores2) %>%
+ full_join(fisheries_scores2) %>%
+ full_join(diplomacy_scores2) %>%
+ full_join(security_scores2) %>%
+  full_join(legal_scores2)
+
+score2mean <- mean(country2df$country_score)
+score2sd <- sd(country2df$country_score)
+
+
+country2df <- country2df %>%
+  mutate(sdmean = (country_score-score2mean)/score2sd)
+
+scores2q <- quantile(country2df$sdmean, probs = c(0, 0.25, 0.5, 0.75, 1))
+
+country2df <- country2df  %>%
+  mutate(rank = ifelse(sdmean < scores2q[2], "very low", 
+                       ifelse(sdmean>scores2q[2] & sdmean < scores2q[3], "low", 
+                               ifelse(sdmean>scores2q[3] & sdmean < scores2q[4], "medium", "high"))))
+  
+cleantable2 <- country2df %>% spread(name, rank) %>%
+  select(country, development:transport)  %>%
+  group_by(country) %>%
+ arrange(country, environment, diplomacy, legal, indigenous, development, transport, fisheries, resources, security)
+
+ cleantable2
+
+ write.csv(cleantable2, file="cleantable2.csv")
 
 ```
