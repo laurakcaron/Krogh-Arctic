@@ -121,7 +121,7 @@ There are ten topics:
 11. legal
 
 ```{r}
-environment <- data.frame(c("research", "science/scientific/scientist", "environment","climate","climate change","ocean","sea","sea level","atmosphere","air","ice","warm","melt","knowledge","station","base","glaciological","geological","biological","ecosystem","paleoclimate","laboratory","institution","conservation","preservation","temperature","data","measurement","study","precipitation","pollution","cryospheric","publication","biodiversity","academic", "glacier","disaster","observe","trend","predict","species","force","global warming","protect" ))
+environment <- data.frame(c("research", "science/scientific/scientist", "environment","climate","climate change","ocean","sea","sea level","atmosphere","air","ice","warm","melt","knowledge","station","glaciological","geological","biological","ecosystem","paleoclimate","laboratory","conservation","preservation","temperature","data","measurement","study","precipitation","pollution","cryospheric","publication","biodiversity","academic", "glacier","disaster","observe","trend","predict","species","force","global warming","protect" ))
 colnames(environment) <- "topic"
 environment <- mutate(environment, name = "environment")
 
@@ -142,7 +142,7 @@ tourism <- data.frame(c("tourism","tourists","rescue","ecotourism"))
 colnames(tourism) <- "topic"
 tourism <- mutate(tourism, name = "tourism")
 
-resources <- data.frame(c("oil","industrial/industry","resource","technology","energy","gas","carbon","infrastructure","build","exploit","mine","utilization","exploitation","natural","mineral","geothermal","wind","exploration","consumer","pipeline","extraction"))
+resources <- data.frame(c("oil","industrial/industry","resource","technology","energy","gas","carbon","infrastructure","build","exploit","mine","utilization","exploitation","natural","mineral","geothermal","wind","exploration","consumer","pipeline","extraction", "seabed", "metal", "metals", "seafloor", "offshore"))
 colnames(resources) <- "topic"
 resources <- mutate(resources, name = "resources")
 
@@ -166,7 +166,7 @@ china <- data.frame(c("china"))
 colnames(china) <- "topic"
 china <- mutate(china, name = "china")
 
-legal <- data.frame(c("continental shelf", "rule", "UNCLOS", "jurisdiction", "rights", "spitsbergen", "legal", "law", "just", "treaty", "treaties", "regulation"))
+legal <- data.frame(c("continental shelf", "rule", "UNCLOS", "jurisdiction", "rights", "spitsbergen", "legal", "law", "just", "treaty", "treaties", "regulation", "boundary", "boundaries", "delimitation", "EEZ", "arbitration", "court", "ICJ", "ruling", "protocol", "reservation", "convention", "contiguous zone", "right", "ratification", "ratified"))
 colnames(legal) <- "topic"
 legal <- mutate(legal, name = "legal")
 ```
