@@ -33,7 +33,7 @@ library(rworldmap)
 library(ngram)
 
 #This sets the directory where the texts are located
-DATA_DIR <- "C:/Users/laura/OneDrive/Desktop/Krogh-Arctic/Strategy Documents (new)"  
+DATA_DIR <- "/Users/sallymackenzie/Desktop/Arctic/Strategy Documents (new)"  
 
 #This command reads in all the file names and stores the texts in a tidy dataframe
 strategy <- readtext(paste0(DATA_DIR, "/*"))
@@ -45,18 +45,18 @@ row.names(strategy) <- strategy$doc_id
 
 
 #Do again for the other folder
-DATA_DIR <- "C:/Users/laura/OneDrive/Desktop/Krogh-Arctic/Observer Documents"  
+DATA_DIR <- "/Users/sallymackenzie/Desktop/Arctic/Observer Documents"  
 observer <- readtext(paste0(DATA_DIR, "/*"))
 row.names(observer) <- observer$doc_id
 
 
 #Third folder
-DATA_DIR <- "C:/Users/laura/OneDrive/Desktop/Krogh-Arctic/Arctic Speeches"  
+DATA_DIR <- "/Users/sallymackenzie/Desktop/Arctic/Arctic Speeches"  
 speeches <- readtext(paste0(DATA_DIR, "/*"))
 row.names(speeches) <- speeches$doc_id
 
 #Fourth folder
-DATA_DIR <- "C:/Users/laura/OneDrive/Desktop/Krogh-Arctic/Official Speeches and Documents"  
+DATA_DIR <- "/Users/sallymackenzie/Desktop/Arctic/Official Speeches and Documents"  
 officialspeeches <- readtext(paste0(DATA_DIR, "/*"))
 row.names(officialspeeches) <- officialspeeches$doc_id
 
@@ -121,7 +121,7 @@ There are ten topics:
 11. legal
 
 ```{r}
-environment <- data.frame(c("research", "science/scientific/scientist", "environment","climate","climate change","ocean","sea","sea level","atmosphere","air","ice","warm","melt","knowledge","station","glaciological","geological","biological","ecosystem","paleoclimate","laboratory","conservation","preservation","temperature","data","measurement","study","precipitation","pollution","cryospheric","publication","biodiversity","academic", "glacier","disaster","observe","trend","predict","species","force","global warming","protect" ))
+environment <- data.frame(c("research", "science", "scienti", "environment","climate","climate change","ocean","sea","sea level","atmosphere", "air", "ice","warm", "melt","knowledge", "station","glaciological","geological","biological","ecosystem","paleoclimate","laboratory","conservation","preservation","temperature","data","measurement","study","precipitation","pollution","cryospheric","publication","biodiversity","academic", "glacier", "disaster", "observe", "trend","predict","species","force","global warming","protect" ))
 colnames(environment) <- "topic"
 environment <- mutate(environment, name = "environment")
 
@@ -142,7 +142,7 @@ tourism <- data.frame(c("tourism","tourists","rescue","ecotourism"))
 colnames(tourism) <- "topic"
 tourism <- mutate(tourism, name = "tourism")
 
-resources <- data.frame(c("oil","industrial/industry","resource","technology","energy","gas","carbon","infrastructure","build","exploit","mine","utilization","exploitation","natural","mineral","geothermal","wind","exploration","consumer","pipeline","extraction", "seabed", "metal", "metals", "seafloor", "offshore"))
+resources <- data.frame(c("oil","industr","resource","technology","energy","gas","carbon","infrastructure","build","exploit","mine","utilization","exploitation","natural","mineral","geothermal","wind","exploration","consumer","pipeline","extraction", "seabed", "metal", "metals", "seafloor", "offshore"))
 colnames(resources) <- "topic"
 resources <- mutate(resources, name = "resources")
 
