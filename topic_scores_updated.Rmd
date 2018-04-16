@@ -33,7 +33,7 @@ library(rworldmap)
 library(ngram)
 
 #This sets the directory where the texts are located
-DATA_DIR <- "/Users/sallymackenzie/Desktop/Arctic/Strategy Documents (new)"  
+DATA_DIR <- "C:/Users/laura/OneDrive/Desktop/Krogh-Arctic/Strategy Documents (new)"  
 
 #This command reads in all the file names and stores the texts in a tidy dataframe
 strategy <- readtext(paste0(DATA_DIR, "/*"))
@@ -45,18 +45,18 @@ row.names(strategy) <- strategy$doc_id
 
 
 #Do again for the other folder
-DATA_DIR <- "/Users/sallymackenzie/Desktop/Arctic/Observer Documents"  
+DATA_DIR <- "C:/Users/laura/OneDrive/Desktop/Krogh-Arctic/Observer Documents"  
 observer <- readtext(paste0(DATA_DIR, "/*"))
 row.names(observer) <- observer$doc_id
 
 
 #Third folder
-DATA_DIR <- "/Users/sallymackenzie/Desktop/Arctic/Arctic Speeches"  
+DATA_DIR <- "C:/Users/laura/OneDrive/Desktop/Krogh-Arctic/Arctic Speeches"  
 speeches <- readtext(paste0(DATA_DIR, "/*"))
 row.names(speeches) <- speeches$doc_id
 
 #Fourth folder
-DATA_DIR <- "/Users/sallymackenzie/Desktop/Arctic/Official Speeches and Documents"  
+DATA_DIR <- "C:/Users/laura/OneDrive/Desktop/Krogh-Arctic/Official Speeches and Documents"  
 officialspeeches <- readtext(paste0(DATA_DIR, "/*"))
 row.names(officialspeeches) <- officialspeeches$doc_id
 
@@ -569,5 +569,27 @@ cleantable2 <- country2df %>% spread(name, rank) %>%
  cleantable2
 
  write.csv(cleantable2, file="cleantable2.csv")
+
+```
+
+##Creating the categories 3
+
+```{r}
+
+scores3q <- quantile(country2df$sdmean, probs = c(0, 0.20, 0.40, 0.80, 1))
+
+country3df <- country2df  %>%
+  mutate(rank = ifelse(sdmean < scores3q[2], "very low", 
+                       ifelse(sdmean>scores3q[2] & sdmean < scores3q[3], "low", 
+                               ifelse(sdmean>scores3q[3] & sdmean < scores3q[4], "medium", "high"))))
+  
+cleantable3 <- country3df %>% spread(name, rank) %>%
+  select(country, development:transport)  %>%
+  group_by(country) %>%
+ arrange(country, environment, diplomacy, legal, indigenous, development, transport, fisheries, resources, security)
+
+ cleantable3
+
+ write.csv(cleantable3, file="cleantable3.csv")
 
 ```
