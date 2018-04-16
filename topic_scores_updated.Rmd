@@ -503,6 +503,64 @@ countrygraph("US")
 
 ```
 
+##Single Country Analysis
+
+```{r}
+
+country2df <- environment_scores2 %>%
+   full_join(indigenous_scores2) %>%
+    full_join(transport_scores2)  %>%
+    full_join(development_scores2) %>%
+  full_join(tourism_scores2) %>%
+  full_join(resources_scores2) %>%
+ full_join(fisheries_scores2) %>%
+ full_join(diplomacy_scores2) %>%
+ full_join(security_scores2) %>%
+  full_join(legal_scores2)
+
+
+countrygraph2 <- function(country.name) {
+countrydf2 <- filter(country2df, country==country.name)
+
+ggplot(countrydf2, aes(x=name, y=country_score)) + geom_bar(stat="identity") + theme(axis.text.x = element_text(angle = 90, hjust = 1)) + scale_x_discrete(paste0(country.name, 2))
+}
+
+countrygraph2("Canada")
+countrygraph2("China")
+countrygraph2("Denmark")
+countrygraph2("Finland")
+countrygraph2("France")
+countrygraph2("Germany")
+countrygraph2("Greenland")
+countrygraph2("Iceland")
+countrygraph2("India")
+countrygraph2("Italy")
+countrygraph2("Japan")
+countrygraph2("Korea")
+countrygraph2("Netherlands")
+countrygraph2("Norway")
+countrygraph2("Poland")
+countrygraph2("Russia")
+countrygraph2("Singapore")
+countrygraph2("Spain")
+countrygraph2("Sweden")
+countrygraph2("Switzerland")
+countrygraph2("UK")
+countrygraph2("US")
+
+
+countrymutli <- country2df %>%
+filter(country=="US"|country=="Russia"|country=="China") %>%
+  filter(name!="tourism" & name!= "environment" & name != "fisheries")
+
+p.countrymulti <- ggplot(countrymutli, aes(x=name, y=country_score, fill=country)) + geom_bar(stat="identity", position="dodge") + theme(axis.text.x = element_text(angle = 90, hjust = 1))
+ggplotly(p.countrymulti)
+
+
+```
+
+
+
 ##Creating the categories
 
 ```{r}
@@ -535,17 +593,6 @@ cleantable <- countrydf %>% spread(name, rank) %>%
 ##Creating the categories 2
 
 ```{r}
-
-country2df <- environment_scores2 %>%
-   full_join(indigenous_scores2) %>%
-    full_join(transport_scores2)  %>%
-    full_join(development_scores2) %>%
-  full_join(tourism_scores2) %>%
-  full_join(resources_scores2) %>%
- full_join(fisheries_scores2) %>%
- full_join(diplomacy_scores2) %>%
- full_join(security_scores2) %>%
-  full_join(legal_scores2)
 
 score2mean <- mean(country2df$country_score)
 score2sd <- sd(country2df$country_score)
