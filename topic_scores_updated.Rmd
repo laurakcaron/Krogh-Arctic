@@ -576,7 +576,7 @@ cleantable2 <- country2df %>% spread(name, rank) %>%
 
 ```{r}
 
-scores3q <- quantile(country2df$sdmean, probs = c(0, 0.20, 0.40, 0.80, 1))
+scores3q <- quantile(country2df$sdmean, probs = c(0, 0.20, 0.40, 0.60, 1))
 
 country3df <- country2df  %>%
   mutate(rank = ifelse(sdmean < scores3q[2], "very low", 

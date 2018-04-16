@@ -3,48 +3,48 @@
 "2","Canada",NA,"low",NA,NA,NA,NA,NA,NA,NA,NA
 "3","Canada",NA,NA,NA,NA,NA,"low",NA,NA,NA,NA
 "4","Canada",NA,NA,NA,NA,"medium",NA,NA,NA,NA,NA
-"5","Canada","medium",NA,NA,NA,NA,NA,NA,NA,NA,NA
+"5","Canada","high",NA,NA,NA,NA,NA,NA,NA,NA,NA
 "6","Canada",NA,NA,NA,NA,NA,NA,NA,NA,NA,"medium"
 "7","Canada",NA,NA,NA,"very low",NA,NA,NA,NA,NA,NA
 "8","Canada",NA,NA,NA,NA,NA,NA,"medium",NA,NA,NA
 "9","Canada",NA,NA,NA,NA,NA,NA,NA,"medium",NA,NA
 "10","Canada",NA,NA,NA,NA,NA,NA,NA,NA,"very low",NA
 "11","China",NA,NA,"high",NA,NA,NA,NA,NA,NA,NA
-"12","China",NA,"medium",NA,NA,NA,NA,NA,NA,NA,NA
-"13","China",NA,NA,NA,NA,NA,"medium",NA,NA,NA,NA
+"12","China",NA,"high",NA,NA,NA,NA,NA,NA,NA,NA
+"13","China",NA,NA,NA,NA,NA,"high",NA,NA,NA,NA
 "14","China",NA,NA,NA,NA,"high",NA,NA,NA,NA,NA
 "15","China","high",NA,NA,NA,NA,NA,NA,NA,NA,NA
 "16","China",NA,NA,NA,NA,NA,NA,NA,NA,NA,"medium"
 "17","China",NA,NA,NA,"very low",NA,NA,NA,NA,NA,NA
 "18","China",NA,NA,NA,NA,NA,NA,"high",NA,NA,NA
-"19","China",NA,NA,NA,NA,NA,NA,NA,"medium",NA,NA
+"19","China",NA,NA,NA,NA,NA,NA,NA,"high",NA,NA
 "20","China",NA,NA,NA,NA,NA,NA,NA,NA,"very low",NA
 "21","Denmark",NA,NA,"high",NA,NA,NA,NA,NA,NA,NA
 "22","Denmark",NA,"medium",NA,NA,NA,NA,NA,NA,NA,NA
 "23","Denmark",NA,NA,NA,NA,NA,"low",NA,NA,NA,NA
-"24","Denmark",NA,NA,NA,NA,"medium",NA,NA,NA,NA,NA
+"24","Denmark",NA,NA,NA,NA,"high",NA,NA,NA,NA,NA
 "25","Denmark","high",NA,NA,NA,NA,NA,NA,NA,NA,NA
 "26","Denmark",NA,NA,NA,NA,NA,NA,NA,NA,NA,"medium"
 "27","Denmark",NA,NA,NA,"very low",NA,NA,NA,NA,NA,NA
-"28","Denmark",NA,NA,NA,NA,NA,NA,"medium",NA,NA,NA
+"28","Denmark",NA,NA,NA,NA,NA,NA,"high",NA,NA,NA
 "29","Denmark",NA,NA,NA,NA,NA,NA,NA,"medium",NA,NA
 "30","Denmark",NA,NA,NA,NA,NA,NA,NA,NA,"low",NA
 "31","Finland",NA,NA,"high",NA,NA,NA,NA,NA,NA,NA
 "32","Finland",NA,"medium",NA,NA,NA,NA,NA,NA,NA,NA
 "33","Finland",NA,NA,NA,NA,NA,"low",NA,NA,NA,NA
-"34","Finland",NA,NA,NA,NA,"medium",NA,NA,NA,NA,NA
+"34","Finland",NA,NA,NA,NA,"high",NA,NA,NA,NA,NA
 "35","Finland","high",NA,NA,NA,NA,NA,NA,NA,NA,NA
-"36","Finland",NA,NA,NA,NA,NA,NA,NA,NA,NA,"medium"
+"36","Finland",NA,NA,NA,NA,NA,NA,NA,NA,NA,"high"
 "37","Finland",NA,NA,NA,"very low",NA,NA,NA,NA,NA,NA
-"38","Finland",NA,NA,NA,NA,NA,NA,"medium",NA,NA,NA
+"38","Finland",NA,NA,NA,NA,NA,NA,"high",NA,NA,NA
 "39","Finland",NA,NA,NA,NA,NA,NA,NA,"medium",NA,NA
 "40","Finland",NA,NA,NA,NA,NA,NA,NA,NA,"very low",NA
 "41","France",NA,NA,"high",NA,NA,NA,NA,NA,NA,NA
 "42","France",NA,"low",NA,NA,NA,NA,NA,NA,NA,NA
 "43","France",NA,NA,NA,NA,NA,"very low",NA,NA,NA,NA
 "44","France",NA,NA,NA,NA,"medium",NA,NA,NA,NA,NA
-"45","France","medium",NA,NA,NA,NA,NA,NA,NA,NA,NA
-"46","France",NA,NA,NA,NA,NA,NA,NA,NA,NA,"medium"
+"45","France","high",NA,NA,NA,NA,NA,NA,NA,NA,NA
+"46","France",NA,NA,NA,NA,NA,NA,NA,NA,NA,"high"
 "47","France",NA,NA,NA,"very low",NA,NA,NA,NA,NA,NA
 "48","France",NA,NA,NA,NA,NA,NA,"medium",NA,NA,NA
 "49","France",NA,NA,NA,NA,NA,NA,NA,"low",NA,NA
@@ -53,7 +53,7 @@
 "52","Germany",NA,"medium",NA,NA,NA,NA,NA,NA,NA,NA
 "53","Germany",NA,NA,NA,NA,NA,"very low",NA,NA,NA,NA
 "54","Germany",NA,NA,NA,NA,"low",NA,NA,NA,NA,NA
-"55","Germany","medium",NA,NA,NA,NA,NA,NA,NA,NA,NA
+"55","Germany","high",NA,NA,NA,NA,NA,NA,NA,NA,NA
 "56","Germany",NA,NA,NA,NA,NA,NA,NA,NA,NA,"low"
 "57","Germany",NA,NA,NA,"very low",NA,NA,NA,NA,NA,NA
 "58","Germany",NA,NA,NA,NA,NA,NA,"low",NA,NA,NA
@@ -70,18 +70,18 @@
 "69","Greenland",NA,NA,NA,NA,NA,NA,NA,"very low",NA,NA
 "70","Iceland",NA,NA,"high",NA,NA,NA,NA,NA,NA,NA
 "71","Iceland",NA,"medium",NA,NA,NA,NA,NA,NA,NA,NA
-"72","Iceland",NA,NA,NA,NA,NA,"medium",NA,NA,NA,NA
-"73","Iceland",NA,NA,NA,NA,"medium",NA,NA,NA,NA,NA
+"72","Iceland",NA,NA,NA,NA,NA,"high",NA,NA,NA,NA
+"73","Iceland",NA,NA,NA,NA,"high",NA,NA,NA,NA,NA
 "74","Iceland","high",NA,NA,NA,NA,NA,NA,NA,NA,NA
 "75","Iceland",NA,NA,NA,NA,NA,NA,NA,NA,NA,"medium"
 "76","Iceland",NA,NA,NA,"low",NA,NA,NA,NA,NA,NA
 "77","Iceland",NA,NA,NA,NA,NA,NA,"high",NA,NA,NA
-"78","Iceland",NA,NA,NA,NA,NA,NA,NA,"medium",NA,NA
+"78","Iceland",NA,NA,NA,NA,NA,NA,NA,"high",NA,NA
 "79","Iceland",NA,NA,NA,NA,NA,NA,NA,NA,"very low",NA
 "80","India",NA,NA,"high",NA,NA,NA,NA,NA,NA,NA
 "81","India",NA,"medium",NA,NA,NA,NA,NA,NA,NA,NA
 "82","India",NA,NA,NA,NA,NA,"very low",NA,NA,NA,NA
-"83","India",NA,NA,NA,NA,"medium",NA,NA,NA,NA,NA
+"83","India",NA,NA,NA,NA,"high",NA,NA,NA,NA,NA
 "84","India","medium",NA,NA,NA,NA,NA,NA,NA,NA,NA
 "85","India",NA,NA,NA,NA,NA,NA,NA,NA,NA,"low"
 "86","India",NA,NA,NA,"very low",NA,NA,NA,NA,NA,NA
@@ -91,46 +91,46 @@
 "90","Italy",NA,NA,"high",NA,NA,NA,NA,NA,NA,NA
 "91","Italy",NA,"medium",NA,NA,NA,NA,NA,NA,NA,NA
 "92","Italy",NA,NA,NA,NA,NA,"low",NA,NA,NA,NA
-"93","Italy",NA,NA,NA,NA,"medium",NA,NA,NA,NA,NA
-"94","Italy","medium",NA,NA,NA,NA,NA,NA,NA,NA,NA
+"93","Italy",NA,NA,NA,NA,"high",NA,NA,NA,NA,NA
+"94","Italy","high",NA,NA,NA,NA,NA,NA,NA,NA,NA
 "95","Italy",NA,NA,NA,NA,NA,NA,NA,NA,NA,"low"
 "96","Italy",NA,NA,NA,"very low",NA,NA,NA,NA,NA,NA
-"97","Italy",NA,NA,NA,NA,NA,NA,"medium",NA,NA,NA
+"97","Italy",NA,NA,NA,NA,NA,NA,"high",NA,NA,NA
 "98","Italy",NA,NA,NA,NA,NA,NA,NA,"low",NA,NA
 "99","Italy",NA,NA,NA,NA,NA,NA,NA,NA,"very low",NA
 "100","Japan",NA,NA,"high",NA,NA,NA,NA,NA,NA,NA
-"101","Japan",NA,"medium",NA,NA,NA,NA,NA,NA,NA,NA
+"101","Japan",NA,"high",NA,NA,NA,NA,NA,NA,NA,NA
 "102","Japan",NA,NA,NA,NA,NA,"low",NA,NA,NA,NA
-"103","Japan",NA,NA,NA,NA,"medium",NA,NA,NA,NA,NA
+"103","Japan",NA,NA,NA,NA,"high",NA,NA,NA,NA,NA
 "104","Japan","high",NA,NA,NA,NA,NA,NA,NA,NA,NA
 "105","Japan",NA,NA,NA,NA,NA,NA,NA,NA,NA,"low"
 "106","Japan",NA,NA,NA,"very low",NA,NA,NA,NA,NA,NA
 "107","Japan",NA,NA,NA,NA,NA,NA,"high",NA,NA,NA
-"108","Japan",NA,NA,NA,NA,NA,NA,NA,"medium",NA,NA
+"108","Japan",NA,NA,NA,NA,NA,NA,NA,"high",NA,NA
 "109","Japan",NA,NA,NA,NA,NA,NA,NA,NA,"very low",NA
 "110","Korea",NA,NA,"high",NA,NA,NA,NA,NA,NA,NA
 "111","Korea",NA,"medium",NA,NA,NA,NA,NA,NA,NA,NA
 "112","Korea",NA,NA,NA,NA,NA,"low",NA,NA,NA,NA
-"113","Korea",NA,NA,NA,NA,"medium",NA,NA,NA,NA,NA
-"114","Korea","medium",NA,NA,NA,NA,NA,NA,NA,NA,NA
+"113","Korea",NA,NA,NA,NA,"high",NA,NA,NA,NA,NA
+"114","Korea","high",NA,NA,NA,NA,NA,NA,NA,NA,NA
 "115","Korea",NA,NA,NA,NA,NA,NA,NA,NA,NA,"low"
 "116","Korea",NA,NA,NA,"low",NA,NA,NA,NA,NA,NA
-"117","Korea",NA,NA,NA,NA,NA,NA,"medium",NA,NA,NA
+"117","Korea",NA,NA,NA,NA,NA,NA,"high",NA,NA,NA
 "118","Korea",NA,NA,NA,NA,NA,NA,NA,"low",NA,NA
 "119","Korea",NA,NA,NA,NA,NA,NA,NA,NA,"very low",NA
 "120","Netherlands",NA,NA,"high",NA,NA,NA,NA,NA,NA,NA
 "121","Netherlands",NA,"medium",NA,NA,NA,NA,NA,NA,NA,NA
-"122","Netherlands",NA,NA,NA,NA,NA,"medium",NA,NA,NA,NA
-"123","Netherlands",NA,NA,NA,NA,"medium",NA,NA,NA,NA,NA
+"122","Netherlands",NA,NA,NA,NA,NA,"high",NA,NA,NA,NA
+"123","Netherlands",NA,NA,NA,NA,"high",NA,NA,NA,NA,NA
 "124","Netherlands","high",NA,NA,NA,NA,NA,NA,NA,NA,NA
 "125","Netherlands",NA,NA,NA,NA,NA,NA,NA,NA,NA,"low"
 "126","Netherlands",NA,NA,NA,"high",NA,NA,NA,NA,"high",NA
 "127","Netherlands",NA,NA,NA,NA,NA,NA,"low",NA,NA,NA
-"128","Netherlands",NA,NA,NA,NA,NA,NA,NA,"medium",NA,NA
+"128","Netherlands",NA,NA,NA,NA,NA,NA,NA,"high",NA,NA
 "129","Norway",NA,NA,"high",NA,NA,NA,NA,NA,NA,NA
-"130","Norway",NA,"medium",NA,NA,NA,NA,NA,NA,NA,NA
-"131","Norway",NA,NA,NA,NA,NA,"medium",NA,NA,NA,NA
-"132","Norway",NA,NA,NA,NA,"medium",NA,NA,NA,NA,NA
+"130","Norway",NA,"high",NA,NA,NA,NA,NA,NA,NA,NA
+"131","Norway",NA,NA,NA,NA,NA,"high",NA,NA,NA,NA
+"132","Norway",NA,NA,NA,NA,"high",NA,NA,NA,NA,NA
 "133","Norway","high",NA,NA,NA,NA,NA,NA,NA,NA,NA
 "134","Norway",NA,NA,NA,NA,NA,NA,NA,NA,NA,"medium"
 "135","Norway",NA,NA,NA,"low",NA,NA,NA,NA,NA,NA
@@ -138,7 +138,7 @@
 "137","Norway",NA,NA,NA,NA,NA,NA,NA,"high",NA,NA
 "138","Norway",NA,NA,NA,NA,NA,NA,NA,NA,"very low",NA
 "139","Poland",NA,NA,"high",NA,NA,NA,NA,NA,NA,NA
-"140","Poland",NA,"medium",NA,NA,NA,NA,NA,NA,NA,NA
+"140","Poland",NA,"high",NA,NA,NA,NA,NA,NA,NA,NA
 "141","Poland",NA,NA,NA,NA,NA,"medium",NA,NA,NA,NA
 "142","Poland",NA,NA,NA,NA,"medium",NA,NA,NA,NA,NA
 "143","Poland","high",NA,NA,NA,NA,NA,NA,NA,NA,NA
@@ -149,26 +149,26 @@
 "148","Poland",NA,NA,NA,NA,NA,NA,NA,NA,"very low",NA
 "149","Russia",NA,NA,"high",NA,NA,NA,NA,NA,NA,NA
 "150","Russia",NA,"medium",NA,NA,NA,NA,NA,NA,NA,NA
-"151","Russia",NA,NA,NA,NA,NA,"medium",NA,NA,NA,NA
-"152","Russia",NA,NA,NA,NA,"medium",NA,NA,NA,NA,NA
+"151","Russia",NA,NA,NA,NA,NA,"high",NA,NA,NA,NA
+"152","Russia",NA,NA,NA,NA,"high",NA,NA,NA,NA,NA
 "153","Russia","high",NA,NA,NA,NA,NA,NA,NA,NA,NA
-"154","Russia",NA,NA,NA,NA,NA,NA,NA,NA,NA,"medium"
+"154","Russia",NA,NA,NA,NA,NA,NA,NA,NA,NA,"high"
 "155","Russia",NA,NA,NA,"very low",NA,NA,NA,NA,NA,NA
 "156","Russia",NA,NA,NA,NA,NA,NA,"high",NA,NA,NA
-"157","Russia",NA,NA,NA,NA,NA,NA,NA,"medium",NA,NA
+"157","Russia",NA,NA,NA,NA,NA,NA,NA,"high",NA,NA
 "158","Russia",NA,NA,NA,NA,NA,NA,NA,NA,"very low",NA
 "159","Singapore",NA,NA,"high",NA,NA,NA,NA,NA,NA,NA
 "160","Singapore",NA,"low",NA,NA,NA,NA,NA,NA,NA,NA
 "161","Singapore",NA,NA,NA,"very low",NA,"very low",NA,NA,"very low",NA
 "162","Singapore",NA,NA,NA,NA,"low",NA,NA,NA,NA,NA
-"163","Singapore","medium",NA,NA,NA,NA,NA,NA,NA,NA,NA
+"163","Singapore","high",NA,NA,NA,NA,NA,NA,NA,NA,NA
 "164","Singapore",NA,NA,NA,NA,NA,NA,NA,NA,NA,"low"
 "165","Singapore",NA,NA,NA,NA,NA,NA,"low",NA,NA,NA
 "166","Singapore",NA,NA,NA,NA,NA,NA,NA,"low",NA,NA
 "167","Spain",NA,NA,"high",NA,NA,NA,NA,NA,NA,NA
 "168","Spain",NA,"low",NA,NA,NA,NA,NA,NA,NA,NA
-"169","Spain",NA,NA,NA,NA,NA,"medium",NA,NA,NA,"medium"
-"170","Spain",NA,NA,NA,NA,"medium",NA,NA,NA,NA,NA
+"169","Spain",NA,NA,NA,NA,NA,"high",NA,NA,NA,"high"
+"170","Spain",NA,NA,NA,NA,"high",NA,NA,NA,NA,NA
 "171","Spain","medium",NA,NA,NA,NA,NA,NA,NA,NA,NA
 "172","Spain",NA,NA,NA,"medium",NA,NA,NA,NA,NA,NA
 "173","Spain",NA,NA,NA,NA,NA,NA,"high",NA,NA,NA
@@ -177,12 +177,12 @@
 "176","Sweden",NA,NA,"high",NA,NA,NA,NA,NA,NA,NA
 "177","Sweden",NA,"medium",NA,NA,NA,NA,NA,NA,NA,NA
 "178","Sweden",NA,NA,NA,NA,NA,"very low",NA,NA,NA,NA
-"179","Sweden",NA,NA,NA,NA,"medium",NA,NA,NA,NA,NA
+"179","Sweden",NA,NA,NA,NA,"high",NA,NA,NA,NA,NA
 "180","Sweden","medium",NA,NA,NA,NA,NA,NA,NA,NA,NA
 "181","Sweden",NA,NA,NA,NA,NA,NA,NA,NA,NA,"medium"
 "182","Sweden",NA,NA,NA,"very low",NA,NA,NA,NA,NA,NA
 "183","Sweden",NA,NA,NA,NA,NA,NA,"high",NA,NA,NA
-"184","Sweden",NA,NA,NA,NA,NA,NA,NA,"medium",NA,NA
+"184","Sweden",NA,NA,NA,NA,NA,NA,NA,"high",NA,NA
 "185","Sweden",NA,NA,NA,NA,NA,NA,NA,NA,"very low",NA
 "186","Switzerland",NA,NA,"high",NA,NA,NA,NA,NA,NA,NA
 "187","Switzerland",NA,"low",NA,NA,NA,NA,NA,NA,NA,NA
@@ -197,8 +197,8 @@
 "196","UK",NA,NA,"high",NA,NA,NA,NA,NA,NA,NA
 "197","UK",NA,"medium",NA,NA,NA,NA,NA,NA,NA,NA
 "198","UK",NA,NA,NA,NA,NA,"low",NA,NA,NA,NA
-"199","UK",NA,NA,NA,NA,"medium",NA,NA,NA,NA,NA
-"200","UK","medium",NA,NA,NA,NA,NA,NA,NA,NA,NA
+"199","UK",NA,NA,NA,NA,"high",NA,NA,NA,NA,NA
+"200","UK","high",NA,NA,NA,NA,NA,NA,NA,NA,NA
 "201","UK",NA,NA,NA,NA,NA,NA,NA,NA,NA,"low"
 "202","UK",NA,NA,NA,"very low",NA,NA,NA,NA,NA,NA
 "203","UK",NA,NA,NA,NA,NA,NA,"medium",NA,NA,NA
