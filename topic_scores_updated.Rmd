@@ -640,3 +640,32 @@ cleantable3 <- country3df %>% spread(name, rank) %>%
  write.csv(cleantable3, file="cleantable3.csv")
 
 ```
+
+
+##More Graphs
+
+```{r}
+membersdf <- country3df 
+
+membersdf$member <- ifelse(membersdf$country=="Canada"|membersdf$country=="Denmark" | membersdf$country=="Greenland" | membersdf$country=="Finland" | membersdf$country == "Iceland" | membersdf$country=="Norway" | membersdf$country == "Russia" | membersdf$country == "Sweden" | membersdf$country=="US", "member", "nonmember'")
+
+multi.indigenous <- ggplot(filter(membersdf, name=="indigenous"), aes(x=reorder(country,country_score), y=country_score, color=member)) + geom_point() + coord_flip() +
+  ggtitle("Indigenous")
+ggplotly(multi.indigenous)
+
+
+multi.resources <- ggplot(filter(membersdf, name=="resources"), aes(x=reorder(country,country_score), y=country_score, color=member)) + geom_point() + coord_flip() +
+  ggtitle("resources")
+ggplotly(multi.resources)
+
+multi.security <- ggplot(filter(membersdf, name=="security"), aes(x=reorder(country,country_score), y=country_score, color=member)) + geom_point() + coord_flip() +
+  ggtitle("Security")
+ggplotly(multi.security)
+
+multi.diplomacy <- ggplot(filter(membersdf, name=="diplomacy"), aes(x=reorder(country,country_score), y=country_score, color=member)) + geom_point() + coord_flip() +
+  ggtitle("diplomacy")
+ggplotly(multi.diplomacy)
+
+
+```
+
