@@ -1,0 +1,313 @@
+---
+title: "arctic topics"
+output:
+  
+  html_document: default
+  pdf_document: default
+always_allow_html: yes
+---
+
+##Topic Scores
+This analysis analyzes Arctic Council speeches and national arctic strategy documents by comparing the relative frequencies of words belonging to ten different topics. We have defined these topics by creating dictionaries of commonly mentioned words that relate to each.
+
+The method used here calculates the fraction of words in each document belonging to each topic to calculate a document-level score. It then averages document-level scores for each country to create a country-level score.
+
+###Preparing the data
+
+This section loads the libraries and the text files from four different folders.
+
+This version does not remove stop words, punctuation, etc. This should not adversely affect our results, since we are using a dictionaries method to calculate our scores.
+
+
+```{r, message=FALSE, warning=FALSE}
+
+library(igraph)
+library(tidyverse)
+library(tidytext)
+library(readtext)
+library(quanteda)
+library(dplyr)
+library(stringr)
+library(plotly)
+library(rworldmap)
+library(ngram)
+
+#This sets the directory where the texts are located
+DATA_DIR <- "C:/Users/laura/OneDrive/Desktop/Krogh-Arctic/Strategy Documents (new)"  
+
+#This command reads in all the file names and stores the texts in a tidy dataframe
+strategy <- readtext(paste0(DATA_DIR, "/*"))
+
+#This identifies the row names of the dataframe
+row.names(strategy) <- strategy$doc_id
+
+#Do again for the second folder
+DATA_DIR <- "C:/Users/laura/OneDrive/Desktop/Krogh-Arctic/Observer Documents"  
+observer <- readtext(paste0(DATA_DIR, "/*"))
+row.names(observer) <- observer$doc_id
+
+#Third folder
+DATA_DIR <- "C:/Users/laura/OneDrive/Desktop/Krogh-Arctic/Arctic Speeches"  
+speeches <- readtext(paste0(DATA_DIR, "/*"))
+row.names(speeches) <- speeches$doc_id
+
+#Fourth folder
+DATA_DIR <- "C:/Users/laura/OneDrive/Desktop/Krogh-Arctic/Official Speeches and Documents"  
+officialspeeches <- readtext(paste0(DATA_DIR, "/*"))
+row.names(officialspeeches) <- officialspeeches$doc_id
+
+
+```
+
+###Combining the data frames and restructing
+
+```{r}
+#unnest the tokens (words) and create a new data frame with each word as one row
+strategydf <- unnest_tokens(strategy, word, text)
+
+observerdf <- unnest_tokens(observer, word, text)
+
+speechesdf <- unnest_tokens(speeches, word, text)
+
+officialspeechesdf <- unnest_tokens(officialspeeches, word, text)
+
+#combine full text (nested) versions into a single df
+fulltexts <- strategy %>%
+  full_join(observer) %>%
+  full_join(speeches) %>%
+  full_join(officialspeeches) 
+
+#combine the three unnested versions into a single df
+totaldf <- strategydf %>%
+  full_join(observerdf) %>%
+  full_join(speechesdf) %>%
+  full_join(officialspeechesdf) 
+
+#calculate the document lengths by counting how many words are in each
+words <- totaldf %>%
+  group_by(doc_id) %>%
+  mutate(length=n()) %>%
+  ungroup()
+
+#separate the doc_id loaded from the filename into country and everything that follows
+words <- words %>%
+  mutate(doc_id2=doc_id) %>%
+  separate(doc_id2, c("country", "misc"), sep = "_") 
+
+#the same for the full text version
+fulltexts <- fulltexts %>%
+  mutate(doc_id2=doc_id) %>%
+  separate(doc_id2, c("country", "misc"), sep = "_") 
+
+```
+
+###Defining the topic dictionaries
+There are ten topics:
+1. environment
+2. indigenous
+3. transport
+4. development
+5. tourism
+6. resources
+7. fisheries
+8. diplomacy
+9. security
+10. legal
+
+```{r}
+
+#Environment
+#define all the words in each dictionary
+environment <- data.frame(c("research", "science", "scienti", "environment","climate","climate change","ocean","sea","sea level","atmosphere", "air", "ice","warm", "melt","knowledge", "station","glaciological","geological","biological","ecosystem","paleoclimate","laboratory","conservation","preservation","temperature","data","measurement","study","precipitation","pollution","cryospheric","publication","biodiversity","academic", "glacier", "disaster", "observe", "trend","predict","species","force","global warming","protect" ))
+
+#name the column for future reference
+colnames(environment) <- "topic"
+
+#add a new column identifying these words as relating to the environment topic, for future reference
+environment <- mutate(environment, name = "environment")
+
+
+#Indigenous
+indigenous <- data.frame(c("nation", "local", "indigenous", "peoples", "community", "human", "social", "lives", "condition", "inhabitants", "well-being", "language", "health", "traditional", "culture", "rural", "residents"))
+colnames(indigenous) <- "topic"
+indigenous <- mutate(indigenous, name = "indigenous")
+
+
+#Transport
+transport <- data.frame(c("transportation", "shipping", "import", "export", "maritime", "transport", "ship", "vessel", "navigation", "route", "channel", "northeast passage", "northwest passage", "northern sea route", "voyage", "commercial", "trade", "icebreakers", "water", "transit"))
+colnames(transport) <- "topic"
+transport <- mutate(transport, name = "transport")
+
+
+#Development
+development <- data.frame(c("Sustainable","development","economic","globalization","economic zones","commercial","production","strategy","benefit","capital","market","enterprise","opportunity","business","infrastructure","fund","industry"))
+colnames(development) <- "topic"
+development <- mutate(development, name = "development")
+
+
+#Tourism
+tourism <- data.frame(c("tourism","tourists","rescue","ecotourism"))
+colnames(tourism) <- "topic"
+tourism <- mutate(tourism, name = "tourism")
+
+
+#Resources
+resources <- data.frame(c("oil","industr","resource","technology","energy","gas","carbon","infrastructure","build","exploit","mine","utilization","exploitation","natural","mineral","geothermal","wind","exploration","consumer","pipeline","extraction", "seabed", "metal", "metals", "seafloor", "offshore"))
+colnames(resources) <- "topic"
+resources <- mutate(resources, name = "resources")
+
+
+#Fisheries
+fisheries <- data.frame(c("fish","fisheries","fishing","aquaculture","goods"))
+colnames(fisheries) <- "topic"
+fisheries <- mutate(fisheries, name = "fisheries")
+
+
+#Diplomacy
+diplomacy <- data.frame(c("strengthen","joint","relationship","peace","integration","cooperation","international","relations","diplomatic","contribute","parties","stability","equality","participants","connect","multilateral","bilateral","regional","global","coalition","collaboration","coordination","share","same","affairs","harmony","alliance","partnership","freedom","political","meet"))
+colnames(diplomacy) <- "topic"
+diplomacy <- mutate(diplomacy, name = "diplomacy")
+
+
+#Security
+security <- data.frame(c("sovereignty", "state", "nation", "secure", "security", "stakeholder", "governance", "claim", "interests", "territory", "zone", "own", "influence", "military", "defend", "defense", "position", "independent"))
+colnames(security) <- "topic"
+security <- mutate(security, name = "security")
+
+#Legal
+legal <- data.frame(c("continental shelf", "rule", "UNCLOS", "jurisdiction", "rights", "spitsbergen", "legal", "law", "just", "treaty", "treaties", "regulation", "boundary", "boundaries", "delimitation", "EEZ", "arbitration", "court", "ICJ", "ruling", "protocol", "reservation", "convention", "contiguous zone", "right", "ratification", "ratified"))
+colnames(legal) <- "topic"
+legal <- mutate(legal, name = "legal")
+```
+
+###Generating scores
+Document scores are generated by counting the frequency of words relating to each topic in each document. Country scores are generated by averaging all the document scores for a single country. They are them standardized by subtracting the average country-topic score and dividing by the standard deviation. 
+
+These scores are then broken into categories:
+High = top 40%
+Medium = next 20%
+Low = next 20%
+Very low = next 20%
+
+```{r}
+
+#define a function that will generate country scores for the provided topic
+
+countwords2 <- function(topic){
+
+#each row contains the full text of a single document  
+docscores <- fulltexts
+
+#add a new column with the total number of times words from that topic appeared in the full text
+#loop through each word in the topic, count how many times it appears, and add them for all words in the topic
+docscores$count <- sapply(fulltexts$text, function(x) sum(apply(topic, 1, function(z) str_count(x, z)))) 
+
+#add a new column with the document length
+docscores$doclength <- sapply(fulltexts$text, function(x) wordcount(x))
+
+#add a new column with score, which equals the frequency divided by the total length
+docscores <- docscores %>%
+  mutate(score=count/doclength) 
+
+#calculate country scores by averaging document scores
+countryscores <- docscores %>%
+  group_by(country) %>%
+  summarize(country_score = mean(score)) %>%
+  mutate(name =topic$name[1] )
+}
+
+#Environment
+#calculate scores
+environment_scores2 <- countwords2(environment)
+
+#Indigenous
+indigenous_scores2 <- countwords2(indigenous)
+
+#Transport
+transport_scores2 <- countwords2(transport)
+
+#Development
+development_scores2 <- countwords2(development)
+
+#Tourism
+tourism_scores2 <- countwords2(tourism)
+
+#Resources
+resources_scores2 <- countwords2(resources)
+
+#Fisheries
+fisheries_scores2 <- countwords2(fisheries)
+
+#Diplomacy
+diplomacy_scores2 <- countwords2(diplomacy)
+
+#Security
+security_scores2 <- countwords2(security)
+
+#Legal
+legal_scores2 <- countwords2(legal)
+
+#combine all the scores together
+country2df <- environment_scores2 %>%
+   full_join(indigenous_scores2) %>%
+    full_join(transport_scores2)  %>%
+    full_join(development_scores2) %>%
+  full_join(tourism_scores2) %>%
+  full_join(resources_scores2) %>%
+ full_join(fisheries_scores2) %>%
+ full_join(diplomacy_scores2) %>%
+ full_join(security_scores2) %>%
+  full_join(legal_scores2)
+
+
+```
+
+##Creating the categories
+
+```{r}
+
+scoremean <- mean(country2df$country_score)
+scoresd <- sd(country2df$country_score)
+
+country2df <- country2df %>%
+  mutate(sdmean = (country_score-scoremean)/scoresd)
+
+scores3q <- quantile(country2df$sdmean, probs = c(0, 0.20, 0.40, 0.60, 1))
+
+country3df <- country2df  %>%
+  mutate(rank = ifelse(sdmean < scores3q[2], "very low", 
+                       ifelse(sdmean>scores3q[2] & sdmean < scores3q[3], "low", 
+                               ifelse(sdmean>scores3q[3] & sdmean < scores3q[4], "medium", "high"))))
+  
+cleantable3 <- country3df %>% spread(name, rank) %>%
+  select(country, development:transport)  %>%
+  group_by(country) %>%
+ arrange(country, environment, diplomacy, legal, indigenous, development, transport, fisheries, resources, security)
+
+ cleantable3
+
+ write.csv(cleantable3, file="cleantable3.csv")
+
+```
+
+
+##More Graphs
+
+```{r}
+membersdf <- country3df 
+
+membersdf$member <- ifelse(membersdf$country=="Canada"|membersdf$country=="Denmark" | membersdf$country=="Greenland" | membersdf$country=="Finland" | membersdf$country == "Iceland" | membersdf$country=="Norway" | membersdf$country == "Russia" | membersdf$country == "Sweden" | membersdf$country=="US", "member", "nonmember")
+
+multi.indigenous <- ggplot(filter(membersdf, name=="indigenous"), aes(x=reorder(country,country_score), y=country_score, color=member)) + geom_point() + coord_flip() +
+  ggtitle("Indigenous") + theme(axis.title.y = element_blank())
+ggplotly(multi.indigenous)
+
+countrymutli <- country2df %>%
+filter(country=="US"|country=="Russia"|country=="China") %>%
+  filter(name!="tourism" & name!= "environment" & name != "fisheries")
+
+p.countrymulti <- ggplot(countrymutli, aes(x=name, y=country_score, fill=country)) + geom_bar(stat="identity", position="dodge") + theme(axis.text.x = element_text(angle = 90, hjust = 1), axis.title.x = element_blank())
+ggplotly(p.countrymulti)
+
+```
+
